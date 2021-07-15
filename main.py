@@ -171,6 +171,12 @@ class ExcelFile(Workbook):
     FG = 0
     BG = 1
 
+    class BORDER:
+        SMALL = 1
+        MEDIUM = 2
+        LARGE = 5
+        DOUBLE = 6
+
     def generate(self, monthEndIndex, yearEnd, solde):
         rowIndex = 2
         columnIndex = 2
@@ -235,61 +241,61 @@ class ExcelFile(Workbook):
         firstRowIndex = rowIndex
         firstColumnIndex = columnIndex
 
-        self.sheet.merge_range(rowIndex, columnIndex, rowIndex, columnIndex+2, "Date", self.createNewFormat(ground=ExcelFile.FG, top=5, left=5, right=2, bottom=6))
+        self.sheet.merge_range(rowIndex, columnIndex, rowIndex, columnIndex+2, "Date", self.createNewFormat(ground=ExcelFile.FG, top=ExcelFile.BORDER.LARGE, left=ExcelFile.BORDER.LARGE, right=ExcelFile.BORDER.MEDIUM, bottom=ExcelFile.BORDER.DOUBLE))
 
         rowIndexTmp = rowIndex + 1
-        self.sheet.write(rowIndexTmp, columnIndex, "Année", self.createNewFormat(ground=ExcelFile.FG, left=5, right=2, bottom=5))
+        self.sheet.write(rowIndexTmp, columnIndex, "Année", self.createNewFormat(ground=ExcelFile.FG, left=ExcelFile.BORDER.LARGE, right=ExcelFile.BORDER.MEDIUM, bottom=ExcelFile.BORDER.LARGE))
         columnIndex += 1
         for columnName in ["Mois", "Complète"]:
-            self.sheet.write(rowIndexTmp, columnIndex, columnName, self.createNewFormat(ground=ExcelFile.FG, right=2, bottom=5))
+            self.sheet.write(rowIndexTmp, columnIndex, columnName, self.createNewFormat(ground=ExcelFile.FG, right=ExcelFile.BORDER.MEDIUM, bottom=ExcelFile.BORDER.LARGE))
             columnIndex += 1
 
         for columnName in ["Motif", "Commentaire", "Montant", "Passé ?", "Date Passage", "Solde Prévisionnel"]:
-            self.sheet.merge_range(rowIndex, columnIndex, rowIndex+1, columnIndex, columnName, self.createNewFormat(ground=ExcelFile.FG, top=5, right=1, bottom=5))
+            self.sheet.merge_range(rowIndex, columnIndex, rowIndex+1, columnIndex, columnName, self.createNewFormat(ground=ExcelFile.FG, top=ExcelFile.BORDER.LARGE, right=ExcelFile.BORDER.SMALL, bottom=ExcelFile.BORDER.LARGE))
             columnIndex+=1
-        self.sheet.merge_range(rowIndex, columnIndex, rowIndex+1, columnIndex, "Solde Réel", self.createNewFormat(ground=ExcelFile.FG, top=5, right=5, bottom=5))
+        self.sheet.merge_range(rowIndex, columnIndex, rowIndex+1, columnIndex, "Solde Réel", self.createNewFormat(ground=ExcelFile.FG, top=ExcelFile.BORDER.LARGE, right=ExcelFile.BORDER.LARGE, bottom=ExcelFile.BORDER.LARGE))
         rowIndex += 2
 
         # Vue rapide
             # Année
         columnIndex = firstColumnIndex
         for rowIndexTmp in range(rowIndex, rowIndex+2):
-            self.sheet.write(rowIndexTmp, columnIndex, None, self.createNewFormat(ground=ExcelFile.FG, left=5, right=2, bottom=1))
+            self.sheet.write(rowIndexTmp, columnIndex, None, self.createNewFormat(ground=ExcelFile.FG, left=ExcelFile.BORDER.LARGE, right=ExcelFile.BORDER.MEDIUM, bottom=ExcelFile.BORDER.SMALL))
         rowIndexTmp += 1
-        self.sheet.write(rowIndexTmp, columnIndex, None, self.createNewFormat(ground=ExcelFile.FG, left=5, right=2, bottom=5))
+        self.sheet.write(rowIndexTmp, columnIndex, None, self.createNewFormat(ground=ExcelFile.FG, left=ExcelFile.BORDER.LARGE, right=ExcelFile.BORDER.MEDIUM, bottom=ExcelFile.BORDER.LARGE))
         columnIndex += 1
 
             # Mois - Complète
         for columnIndexTmp in range(columnIndex, columnIndex+2):
             for rowIndexTmp in range(rowIndex, rowIndex+2):
-                self.sheet.write(rowIndexTmp, columnIndexTmp, None, self.createNewFormat(ground=ExcelFile.FG, right=2, bottom=1))
+                self.sheet.write(rowIndexTmp, columnIndexTmp, None, self.createNewFormat(ground=ExcelFile.FG, right=ExcelFile.BORDER.MEDIUM, bottom=ExcelFile.BORDER.SMALL))
             rowIndexTmp += 1
-            self.sheet.write(rowIndexTmp, columnIndexTmp, None, self.createNewFormat(ground=ExcelFile.FG, right=2, bottom=5))
+            self.sheet.write(rowIndexTmp, columnIndexTmp, None, self.createNewFormat(ground=ExcelFile.FG, right=ExcelFile.BORDER.MEDIUM, bottom=ExcelFile.BORDER.LARGE))
         columnIndex = columnIndexTmp + 1
 
             # Motif - Commentaire - Montant - Passé ? - Date Passage
         for columnIndexTmp in range(columnIndex, columnIndex+5):
             for rowIndexTmp in range(rowIndex, rowIndex+2):
-                self.sheet.write(rowIndexTmp, columnIndexTmp, None, self.createNewFormat(ground=ExcelFile.FG, right=1, bottom=1))
+                self.sheet.write(rowIndexTmp, columnIndexTmp, None, self.createNewFormat(ground=ExcelFile.FG, right=ExcelFile.BORDER.SMALL, bottom=ExcelFile.BORDER.SMALL))
             rowIndexTmp += 1
-            self.sheet.write(rowIndexTmp, columnIndexTmp, None, self.createNewFormat(ground=ExcelFile.FG, right=1, bottom=5))
+            self.sheet.write(rowIndexTmp, columnIndexTmp, None, self.createNewFormat(ground=ExcelFile.FG, right=ExcelFile.BORDER.SMALL, bottom=ExcelFile.BORDER.LARGE))
         columnIndex = columnIndexTmp + 1
 
             # Solde Prévisionnel
         rowIndexTmp = rowIndex
-        self.sheet.write(rowIndexTmp, columnIndex, None, self.createNewFormat(ground=ExcelFile.FG, right=1, bottom=1))
+        self.sheet.write(rowIndexTmp, columnIndex, None, self.createNewFormat(ground=ExcelFile.FG, right=ExcelFile.BORDER.SMALL, bottom=ExcelFile.BORDER.SMALL))
         rowIndexTmp += 1
-        self.sheet.write(rowIndexTmp, columnIndex, "={}".format(xl_rowcol_to_cell(rowIndexTmp+2, columnIndex)), self.createNewFormat(**self.deviseFormatDict, right=1, bottom=1))
+        self.sheet.write(rowIndexTmp, columnIndex, "={}".format(xl_rowcol_to_cell(rowIndexTmp+2, columnIndex)), self.createNewFormat(**self.deviseFormatDict, right=ExcelFile.BORDER.SMALL, bottom=ExcelFile.BORDER.SMALL))
         rowIndexTmp += 1
-        self.sheet.write(rowIndexTmp, columnIndex, None, self.createNewFormat(ground=ExcelFile.FG, right=1, bottom=5))
+        self.sheet.write(rowIndexTmp, columnIndex, None, self.createNewFormat(ground=ExcelFile.FG, right=ExcelFile.BORDER.SMALL, bottom=ExcelFile.BORDER.LARGE))
         columnIndex += 1
 
             # Solde Réel
-        self.sheet.write(rowIndex, columnIndex, None, self.createNewFormat(ground=ExcelFile.FG, right=5, bottom=1))
+        self.sheet.write(rowIndex, columnIndex, None, self.createNewFormat(ground=ExcelFile.FG, right=ExcelFile.BORDER.LARGE, bottom=ExcelFile.BORDER.SMALL))
         rowIndex += 1
-        self.sheet.write(rowIndex, columnIndex, "={}".format(xl_rowcol_to_cell(rowIndex+2, columnIndex)), self.createNewFormat(**self.deviseFormatDict, right=5, bottom=1))
+        self.sheet.write(rowIndex, columnIndex, "={}".format(xl_rowcol_to_cell(rowIndex+2, columnIndex)), self.createNewFormat(**self.deviseFormatDict, right=ExcelFile.BORDER.LARGE, bottom=ExcelFile.BORDER.SMALL))
         rowIndex += 1
-        self.sheet.write(rowIndex, columnIndex, None, self.createNewFormat(ground=ExcelFile.FG, right=5, bottom=5))
+        self.sheet.write(rowIndex, columnIndex, None, self.createNewFormat(ground=ExcelFile.FG, right=ExcelFile.BORDER.LARGE, bottom=ExcelFile.BORDER.LARGE))
         rowIndex += 1
 
         return rowIndex
@@ -303,24 +309,24 @@ class ExcelFile(Workbook):
 
             # Mois - Complète
             for columnIndexTmp in range(columnIndex, columnIndex+2):
-                self.sheet.write(rowIndex, columnIndexTmp, None, self.createNewFormat(ground=ExcelFile.FG, right=2, bottom=1))
-                self.sheet.write(rowIndex+1, columnIndexTmp, None, self.createNewFormat(ground=ExcelFile.FG, right=2, bottom=2))
+                self.sheet.write(rowIndex, columnIndexTmp, None, self.createNewFormat(ground=ExcelFile.FG, right=ExcelFile.BORDER.MEDIUM, bottom=ExcelFile.BORDER.SMALL))
+                self.sheet.write(rowIndex+1, columnIndexTmp, None, self.createNewFormat(ground=ExcelFile.FG, right=ExcelFile.BORDER.MEDIUM, bottom=ExcelFile.BORDER.MEDIUM))
             columnIndex = columnIndexTmp + 1
 
             # Motif - Commentaire - Montant - Passé ? - Date Passage
             for columnIndexTmp in range(columnIndex, columnIndex+5):
-                self.sheet.write(rowIndex, columnIndexTmp, None, self.createNewFormat(ground=ExcelFile.FG, right=1, bottom=1))
-                self.sheet.write(rowIndex+1, columnIndexTmp, None, self.createNewFormat(ground=ExcelFile.FG, right=1, bottom=2))
+                self.sheet.write(rowIndex, columnIndexTmp, None, self.createNewFormat(ground=ExcelFile.FG, right=ExcelFile.BORDER.SMALL, bottom=ExcelFile.BORDER.SMALL))
+                self.sheet.write(rowIndex+1, columnIndexTmp, None, self.createNewFormat(ground=ExcelFile.FG, right=ExcelFile.BORDER.SMALL, bottom=ExcelFile.BORDER.MEDIUM))
             columnIndex = columnIndexTmp + 1
 
             # Solde Prévisionnel
-            self.sheet.write(rowIndex, columnIndex, ExcelFile.formuleSP(rowIndex, columnIndex), self.createNewFormat(**self.deviseFormatDict, right=1, bottom=1))
-            self.sheet.write(rowIndex+1, columnIndex, ExcelFile.formuleSP(rowIndex+1, columnIndex), self.createNewFormat(**self.deviseFormatDict, right=1, bottom=2))
+            self.sheet.write(rowIndex, columnIndex, ExcelFile.formuleSP(rowIndex, columnIndex), self.createNewFormat(**self.deviseFormatDict, right=ExcelFile.BORDER.SMALL, bottom=ExcelFile.BORDER.SMALL))
+            self.sheet.write(rowIndex+1, columnIndex, ExcelFile.formuleSP(rowIndex+1, columnIndex), self.createNewFormat(**self.deviseFormatDict, right=ExcelFile.BORDER.SMALL, bottom=ExcelFile.BORDER.MEDIUM))
             columnIndex += 1
 
             # Solde Réel
-            self.sheet.write(rowIndex, columnIndex, ExcelFile.formuleSR(rowIndex, columnIndex), self.createNewFormat(**self.deviseFormatDict, right=5, bottom=1))
-            self.sheet.write(rowIndex+1, columnIndex, ExcelFile.formuleSR(rowIndex+1, columnIndex), self.createNewFormat(**self.deviseFormatDict, right=5, bottom=2))
+            self.sheet.write(rowIndex, columnIndex, ExcelFile.formuleSR(rowIndex, columnIndex), self.createNewFormat(**self.deviseFormatDict, right=ExcelFile.BORDER.LARGE, bottom=ExcelFile.BORDER.SMALL))
+            self.sheet.write(rowIndex+1, columnIndex, ExcelFile.formuleSR(rowIndex+1, columnIndex), self.createNewFormat(**self.deviseFormatDict, right=ExcelFile.BORDER.LARGE, bottom=ExcelFile.BORDER.MEDIUM))
             columnIndex = firstColumnIndex
             rowIndex += 2
 
@@ -328,54 +334,54 @@ class ExcelFile(Workbook):
         firstMonthIndex = today.month - 1 if bottomYear else 0
 
         for monthIndex in range(lastMonthIndex, firstMonthIndex-1, -1):
-            monthBottomBorder = 5 if not bottomYear and monthIndex == firstMonthIndex else 2
+            monthBottomBorder = ExcelFile.BORDER.LARGE if not bottomYear and monthIndex == firstMonthIndex else ExcelFile.BORDER.MEDIUM
 
             # Mois
             columnIndex += 1
-            self.sheet.merge_range(rowIndex, columnIndex, rowIndex+4, columnIndex, monthList[monthIndex].upper(), self.createNewFormat(**self.monthYearFormatDitct, right=2, bottom=monthBottomBorder))
+            self.sheet.merge_range(rowIndex, columnIndex, rowIndex+4, columnIndex, monthList[monthIndex].upper(), self.createNewFormat(**self.monthYearFormatDitct, right=ExcelFile.BORDER.MEDIUM, bottom=monthBottomBorder))
             # Complète
             columnIndex += 1
             for rowIndexTmp in range(rowIndex, rowIndex+4):
-                self.sheet.write(rowIndexTmp, columnIndex, None, self.createNewFormat(**self.dateFormatDict, right=2, bottom=1))
-            self.sheet.write(rowIndexTmp+1, columnIndex, None, self.createNewFormat(**self.dateFormatDict, right=2, bottom=monthBottomBorder))
+                self.sheet.write(rowIndexTmp, columnIndex, None, self.createNewFormat(**self.dateFormatDict, right=ExcelFile.BORDER.MEDIUM, bottom=ExcelFile.BORDER.SMALL))
+            self.sheet.write(rowIndexTmp+1, columnIndex, None, self.createNewFormat(**self.dateFormatDict, right=ExcelFile.BORDER.MEDIUM, bottom=monthBottomBorder))
             columnIndex += 1
 
             # Motif - Commentaire
             for columnIndexTmp in range(columnIndex, columnIndex+2):
                 for rowIndexTmp in range(rowIndex, rowIndex+4):
-                    self.sheet.write(rowIndexTmp, columnIndexTmp, None, self.createNewFormat(ground=ExcelFile.FG, right=1, bottom=1))
-                self.sheet.write(rowIndexTmp+1, columnIndexTmp, None, self.createNewFormat(ground=ExcelFile.FG, right=1, bottom=monthBottomBorder))
+                    self.sheet.write(rowIndexTmp, columnIndexTmp, None, self.createNewFormat(ground=ExcelFile.FG, right=ExcelFile.BORDER.SMALL, bottom=ExcelFile.BORDER.SMALL))
+                self.sheet.write(rowIndexTmp+1, columnIndexTmp, None, self.createNewFormat(ground=ExcelFile.FG, right=ExcelFile.BORDER.SMALL, bottom=monthBottomBorder))
             columnIndex = columnIndexTmp + 1
 
             # Montant
             for rowIndexTmp in range(rowIndex, rowIndex+4):
-                self.sheet.write(rowIndexTmp, columnIndex, None, self.createNewFormat(**self.deviseFormatDict, right=1, bottom=1))
-            self.sheet.write(rowIndexTmp+1, columnIndex, None, self.createNewFormat(**self.deviseFormatDict, right=1, bottom=monthBottomBorder))
+                self.sheet.write(rowIndexTmp, columnIndex, None, self.createNewFormat(**self.deviseFormatDict, right=ExcelFile.BORDER.SMALL, bottom=ExcelFile.BORDER.SMALL))
+            self.sheet.write(rowIndexTmp+1, columnIndex, None, self.createNewFormat(**self.deviseFormatDict, right=ExcelFile.BORDER.SMALL, bottom=monthBottomBorder))
             columnIndex += 1
 
             # Passé ?
-            self.sheet.write(rowIndex, columnIndex, None, self.createNewFormat(ground=ExcelFile.FG, right=1, bottom=1))
+            self.sheet.write(rowIndex, columnIndex, None, self.createNewFormat(ground=ExcelFile.FG, right=ExcelFile.BORDER.SMALL, bottom=ExcelFile.BORDER.SMALL))
             for rowIndexTmp in range(rowIndex+1, rowIndex+4):
-                self.sheet.write(rowIndexTmp, columnIndex, "Non", self.createNewFormat(ground=ExcelFile.FG, right=1, bottom=1))
-            self.sheet.write(rowIndexTmp+1, columnIndex, "Non", self.createNewFormat(ground=ExcelFile.FG, right=1, bottom=monthBottomBorder))
+                self.sheet.write(rowIndexTmp, columnIndex, "Non", self.createNewFormat(ground=ExcelFile.FG, right=ExcelFile.BORDER.SMALL, bottom=ExcelFile.BORDER.SMALL))
+            self.sheet.write(rowIndexTmp+1, columnIndex, "Non", self.createNewFormat(ground=ExcelFile.FG, right=ExcelFile.BORDER.SMALL, bottom=monthBottomBorder))
             columnIndex += 1
 
             # Date Passage
             for rowIndexTmp in range(rowIndex, rowIndex+4):
-                self.sheet.write(rowIndexTmp, columnIndex, None, self.createNewFormat(**self.dateFormatDict, right=1, bottom=1))
-            self.sheet.write(rowIndexTmp+1, columnIndex, None, self.createNewFormat(**self.dateFormatDict, right=1, bottom=monthBottomBorder))
+                self.sheet.write(rowIndexTmp, columnIndex, None, self.createNewFormat(**self.dateFormatDict, right=ExcelFile.BORDER.SMALL, bottom=ExcelFile.BORDER.SMALL))
+            self.sheet.write(rowIndexTmp+1, columnIndex, None, self.createNewFormat(**self.dateFormatDict, right=ExcelFile.BORDER.SMALL, bottom=monthBottomBorder))
             columnIndex += 1
 
             # Solde Prévisionnel
             for rowIndexTmp in range(rowIndex, rowIndex+4):
-                self.sheet.write(rowIndexTmp, columnIndex, ExcelFile.formuleSP(rowIndexTmp, columnIndex), self.createNewFormat(**self.deviseFormatDict, right=1, bottom=1))
-            self.sheet.write(rowIndexTmp+1, columnIndex, ExcelFile.formuleSP(rowIndexTmp+1, columnIndex), self.createNewFormat(**self.deviseFormatDict, right=1, bottom=monthBottomBorder))
+                self.sheet.write(rowIndexTmp, columnIndex, ExcelFile.formuleSP(rowIndexTmp, columnIndex), self.createNewFormat(**self.deviseFormatDict, right=ExcelFile.BORDER.SMALL, bottom=ExcelFile.BORDER.SMALL))
+            self.sheet.write(rowIndexTmp+1, columnIndex, ExcelFile.formuleSP(rowIndexTmp+1, columnIndex), self.createNewFormat(**self.deviseFormatDict, right=ExcelFile.BORDER.SMALL, bottom=monthBottomBorder))
             columnIndex += 1
 
             # Solde Réel
             for rowIndexTmp in range(rowIndex, rowIndex+4):
-                self.sheet.write(rowIndexTmp, columnIndex, ExcelFile.formuleSR(rowIndexTmp, columnIndex), self.createNewFormat(**self.deviseFormatDict, right=5, bottom=1))
-            self.sheet.write(rowIndexTmp+1, columnIndex, ExcelFile.formuleSR(rowIndexTmp+1, columnIndex), self.createNewFormat(**self.deviseFormatDict, right=5, bottom=monthBottomBorder))
+                self.sheet.write(rowIndexTmp, columnIndex, ExcelFile.formuleSR(rowIndexTmp, columnIndex), self.createNewFormat(**self.deviseFormatDict, right=ExcelFile.BORDER.LARGE, bottom=ExcelFile.BORDER.SMALL))
+            self.sheet.write(rowIndexTmp+1, columnIndex, ExcelFile.formuleSR(rowIndexTmp+1, columnIndex), self.createNewFormat(**self.deviseFormatDict, right=ExcelFile.BORDER.LARGE, bottom=monthBottomBorder))
 
             columnIndex = firstColumnIndex
             rowIndex = rowIndexTmp + 2
@@ -384,44 +390,44 @@ class ExcelFile(Workbook):
             columnIndex += 1
 
             # Mois
-            self.sheet.write(rowIndex, columnIndex, "BASE", self.createNewFormat(ground=ExcelFile.FG, right=2, bottom=5))
+            self.sheet.write(rowIndex, columnIndex, "BASE", self.createNewFormat(ground=ExcelFile.FG, right=ExcelFile.BORDER.MEDIUM, bottom=ExcelFile.BORDER.LARGE))
             columnIndex += 1
 
             # Complète
-            self.sheet.write(rowIndex, columnIndex, "{:%x}".format(today), self.createNewFormat(**self.dateFormatDict, right=2, bottom=5))
+            self.sheet.write(rowIndex, columnIndex, "{:%x}".format(today), self.createNewFormat(**self.dateFormatDict, right=ExcelFile.BORDER.MEDIUM, bottom=ExcelFile.BORDER.LARGE))
             columnIndex += 1
 
             # Motif
-            self.sheet.write(rowIndex, columnIndex, "SOLDE", self.createNewFormat(ground=ExcelFile.FG, right=1, bottom=5))
+            self.sheet.write(rowIndex, columnIndex, "SOLDE", self.createNewFormat(ground=ExcelFile.FG, right=ExcelFile.BORDER.SMALL, bottom=ExcelFile.BORDER.LARGE))
             columnIndex += 1
 
             # Commentaires
-            self.sheet.write(rowIndex, columnIndex, None, self.createNewFormat(ground=ExcelFile.FG, right=1, bottom=5))
+            self.sheet.write(rowIndex, columnIndex, None, self.createNewFormat(ground=ExcelFile.FG, right=ExcelFile.BORDER.SMALL, bottom=ExcelFile.BORDER.LARGE))
             columnIndex += 1
 
             # Montant
-            self.sheet.write(rowIndex, columnIndex, solde, self.createNewFormat(**self.deviseFormatDict, right=1, bottom=5))
+            self.sheet.write(rowIndex, columnIndex, solde, self.createNewFormat(**self.deviseFormatDict, right=ExcelFile.BORDER.SMALL, bottom=ExcelFile.BORDER.LARGE))
             columnIndex += 1
 
             # Passé ?
-            self.sheet.write(rowIndex, columnIndex, "Oui", self.createNewFormat(ground=ExcelFile.FG, right=1, bottom=5))
+            self.sheet.write(rowIndex, columnIndex, "Oui", self.createNewFormat(ground=ExcelFile.FG, right=ExcelFile.BORDER.SMALL, bottom=ExcelFile.BORDER.LARGE))
             columnIndex += 1
 
             # Date Passage
-            self.sheet.write(rowIndex, columnIndex, None, self.createNewFormat(**self.dateFormatDict, right=1, bottom=5))
+            self.sheet.write(rowIndex, columnIndex, None, self.createNewFormat(**self.dateFormatDict, right=ExcelFile.BORDER.SMALL, bottom=ExcelFile.BORDER.LARGE))
             columnIndex += 1
 
             # Solde Provisoir
-            self.sheet.write(rowIndex, columnIndex, ExcelFile.formuleSP(rowIndex, columnIndex, solde=True), self.createNewFormat(**self.deviseFormatDict, right=1, bottom=5))
+            self.sheet.write(rowIndex, columnIndex, ExcelFile.formuleSP(rowIndex, columnIndex, solde=True), self.createNewFormat(**self.deviseFormatDict, right=ExcelFile.BORDER.SMALL, bottom=ExcelFile.BORDER.LARGE))
             columnIndex += 1
 
             # Solde Réel
-            self.sheet.write(rowIndex, columnIndex, ExcelFile.formuleSR(rowIndex, columnIndex, solde=True), self.createNewFormat(**self.deviseFormatDict, right=5, bottom=5))
+            self.sheet.write(rowIndex, columnIndex, ExcelFile.formuleSR(rowIndex, columnIndex, solde=True), self.createNewFormat(**self.deviseFormatDict, right=ExcelFile.BORDER.LARGE, bottom=ExcelFile.BORDER.LARGE))
             columnIndex = firstColumnIndex
             rowIndex += 1
 
         lastRowIndex = rowIndex - 1
-        self.sheet.merge_range(firstRowIndex, columnIndex, lastRowIndex, columnIndex, yearToGenerate, self.createNewFormat(**self.monthYearFormatDitct, left=5, right=2, bottom=5))
+        self.sheet.merge_range(firstRowIndex, columnIndex, lastRowIndex, columnIndex, yearToGenerate, self.createNewFormat(**self.monthYearFormatDitct, left=ExcelFile.BORDER.LARGE, right=ExcelFile.BORDER.MEDIUM, bottom=ExcelFile.BORDER.LARGE))
 
         return rowIndex
 
